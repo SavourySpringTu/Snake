@@ -6,13 +6,10 @@
 
 using namespace std;
 
-int toadox[20];
-int toadoy[20];
-int sl=4;
+int toadox[50];
+int toadoy[50];
 int save_random[2];
-int diem=0;
-int check;
-
+int sl=4;
 void gotoxy( int x, int y)
 {
 	static HANDLE h = NULL;  
@@ -45,40 +42,41 @@ void Nocursortype() /// an con tro chuot
 }
 void box()
 {
-	gotoxy(0,0);
+	gotoxy(1,1);
 	cout<<char(218);
-	gotoxy(37,13);
+	gotoxy(47,22);
 	cout<<char(217);
-	gotoxy(37,0);
-	cout<<char(191);
-	gotoxy(0,13);
+	gotoxy(1,22);
 	cout<<char(192);
-	for(int i=1;i<37;i++)
+	gotoxy(47,1);
+	cout<<char(191);
+	for(int i=0;i<45;i++)
 	{
-		gotoxy(i,0);
+		gotoxy(i+2,1);
 		cout<<char(196);
-		gotoxy(i,13);
+		gotoxy(i+2,22);
 		cout<<char(196);
 	}
-	for(int i=1;i<13;i++)
+	for(int i=0;i<20;i++)
 	{
-		gotoxy(0,i);
+		gotoxy(1,i+2);
 		cout<<char(179);
-		gotoxy(37,i);
+		gotoxy(47,i+2);
 		cout<<char(179);
 	}
 }
-void khoitao()
+void create()
 {
-	int xkhoitao=14;
-	int ykhoitao=8;
-	for(int i=0;i<4;i++)
+	int khoitaox=15;
+	int khoitaoy=5;
+	for(int i=0;i<sl;i++)
 	{
-		toadox[i]= xkhoitao--;
-		toadoy[i]= ykhoitao;
-	}
+		toadox[i]=khoitaox;
+		toadoy[i]=khoitaoy;
+		khoitaox--;
+	}	
 }
-void snake(int toadox[],int toadoy[])
+void paint()
 {
 	for(int i=0;i<sl;i++)
 	{
@@ -86,95 +84,152 @@ void snake(int toadox[],int toadoy[])
 		if(i==0)
 			cout<<"0";
 		else
-			cout<<"o";
-	}
+			cout<<"o";	
+	}	
 }
-void kethua(int toadox[],int toadoy[])
+void move(int x,int y)
 {
-	for(int i=sl-1;i>0;i--)
+	for(int i=sl;i>0;i--)
 	{
 		toadox[i]=toadox[i-1];
 		toadoy[i]=toadoy[i-1];
 	}
+	toadox[0]=x;
+	toadoy[0]=y;
 }
 int random()
 {
 	int x;
 	int y;
 	srand(time(0));
-	int res=rand() % ( 35 - 0 + 1) + 1;
-	int res1=rand() % (35 - 0 + 1) + 1;
-	int res2=rand() % (12 - 0 + 1) + 1;
-	int res3=rand() % (12 - 0 + 1) + 1;
+	int res=rand() % ( 46 - 0 + 1) + 1;
+	int res1=rand() % (46 - 0 + 1) + 1;
+	int res2=rand() % (21 - 0 + 1) + 1;
+	int res3=rand() % (21 - 0 + 1) + 1;
 	x=int((res+res1)/2);
 	y=int((res3+res2)/2);
 	gotoxy(x,y);
 	save_random[0]=x;
 	save_random[1]=y;	
 }
-void move()
+void menu()
 {
-	kethua(toadox,toadoy);
-	if(_kbhit())
-	{
-		char kt=getch();
-		if(kt==72)
-			check=0;
-		if(kt==80)
-			check=1;
-		if(kt==75)
-			check=2;
-		if(kt==77)
-			check=3;
-	}
-	if(check==0)
-	{
-		toadoy[0]--;
-	}
-	else if(check==1)
-	{
-		toadoy[0]++;
-	}
-	else if(check==2)
-	{
-		toadox[0]--;
-	}
-	else if(check==3)
-	{
-		toadox[0]++;
-	}
+	gotoxy(50,2);
+	cout<<"1. Choi lai";
+	gotoxy(50,3);
+	cout<<"2. Thoat";
+}
+int chon_menu()
+{
+	int n;
+	gotoxy(50,4);
+	cout<<"Nhap lua chon: ";
+	cin>>n;
+	return n;
 }
 void all()
-{
-	khoitao();
+{	
+	back:
+	system("cls");
+	int check=2;
+	int check1;
+	// ve khung
+	box();
+	//khoi tao vi tri ran
+	create();
+	//ve ran
+	paint();
+	int x=toadox[0];
+	int y=toadoy[0];
+	//diem
+	gotoxy(50,2);
+	cout<<"DIEM:";
+	//random moi`
+	XT:
+	random();
+	gotoxy(save_random[0],save_random[1]);
+	cout<<"*";
+	gotoxy(56,2);
+	cout<<sl-4;
 	while(true)
 	{
-		box();
-		move();	
-		snake(toadox,toadoy);
-		Sleep(500);
-		system("cls");
-//		gotoxy(save_random[0],save_random[1]);
-//		cout<<"*";
-//		if(save_random[0]==toadox[0] && save_random[1]==toadoy[0])
-//		{
-//			random();
-//			sl++;
-//			diem++;
-//		}
-//		if(toadox[0]==0 || toadoy[0]==0 ||toadox[0]==37 || toadoy[0]==13)
-//		{
-//			break;
-//		}
+		gotoxy(toadox[sl],toadoy[sl]);
+		cout<<" ";
+		paint();
+		if(_kbhit()==true)
+		{
+			check1=check;
+			char c=_getch();
+			if(c==-32)
+			{
+				c=_getch()	;
+				if(c==72)
+					check=1;
+				else if(c==80)
+					check=0;
+				else if(c==75)
+					check=3;
+				else if(c=77)
+					check=2;
+				if(check1==1 and check==0)
+					check=1;
+				else if(check1==0 and check==1)
+					check=0;
+				else if(check1==2 and check==3)
+					check=2;
+				else if(check1==3 and check==2)
+					check=3;
+			}	
+		}
+		if(check==0)
+			y++;
+		else if(check==1)
+			y--;
+		else if(check==2)
+			x++;
+		else if(check==3)
+			x--;
+		// xu ly vi tri xy
+		move(x,y);
+		//xu ly + diem va random point
+		if(x==save_random[0] && y==save_random[1])
+		{
+			sl++;
+			goto XT;
+		}
+		//Xu ly logic
+		if(toadox[0]==47 || toadoy[0]==23 || toadox[0]==0 || toadoy[0]==0)
+			goto out;
+		for(int i=4;i<sl;i++)
+		{
+			if(x==toadox[i] && y==toadoy[i])
+			{
+				goto out;
+			}
+		}
+		Sleep(300);
+	}
+	out:
+	gotoxy(17,10);
+	cout<<"GAME OVER";	
+	gotoxy(50,3);
+	menu();
+	int chon=chon_menu();
+	switch(chon)
+	{
+		case 1:
+		{
+			goto back;
+		}
+		case 2:
+		{
+			break;
+		}
 	}
 	system("cls");
-	gotoxy(12,4);
-	cout<<"GAME OVER";
-	gotoxy(0,10);
 }
 int main()
 {
 	Nocursortype();
-	random();
 	all();
 }
